@@ -2,7 +2,7 @@
 % Please edit documentation in R/SpaceX.R
 \name{SpaceX}
 \alias{SpaceX}
-\title{TITLE}
+\title{SpaceX function}
 \usage{
 SpaceX(Gene_expression_mat, Spatial_locations)
 }

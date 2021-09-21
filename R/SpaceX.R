@@ -6,7 +6,7 @@
 ## cluster annotations on the third column.
 ## Dependency: doParallel,PQLseq MSFA
 
-#' TITLE
+#' SpaceX function
 #'
 #' DESCRIPTION
 #'
