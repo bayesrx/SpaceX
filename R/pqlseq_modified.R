@@ -7,25 +7,35 @@
 ##
 ##################################################################################
 
-#' TITLE
+#' Fit Generalized Linear Mixed Model with Known Kinship Matrices Through Penalized-quasi Likelihood
 #'
-#' DESCRIPTION
+#' Fit a generalized linear mixed model with a random intercept. The covariance matrix of the random intercept is proportional to a known kinship matrix. This is a modified version of the pqlseq algorithm particularly for the SpaceX package. For more details check the pqlseq function from PQLseq package.
 #'
-#' @param RawCountDataSet DESCRIPTION
-#' @param Phenotypes DESCRIPTION
-#' @param Covariates DESCRIPTION
-#' @param RelatednessMatrix DESCRIPTION
-#' @param LibSize DESCRIPTION
-#' @param fit.model DESCRIPTION
-#' @param fit.method DESCRIPTION
-#' @param fit.maxiter DESCRIPTION
-#' @param fit.tol DESCRIPTION
-#' @param numCore DESCRIPTION
-#' @param filtering DESCRIPTION
-#' @param verbose DESCRIPTION
-#' @param ... DESCRIPTION
+#' @param RawCountDataSet a data frame containing the read count.
+#' @param Phenotypes a vector containing the predictor of interest.
+#' @param Covariates a data frame containing the covariates subject to adjustment (Default = NULL).
+#' @param RelatednessMatrix a known relationship matrix (e.g. kinship matrix in genetic studies). When supplied with a matrix, this matrix should be a positive semi-definite matrix with dimensions equal to the sample size in count data, and the order of subjects in this matrix should also match the order of subjects in count data. Currently there is no ID checking feature implemented, and it is the user's responsibility to match the orders.
+#' @param LibSize a data frame containing the total read count. For possion mixed model, it will be calculated automatically if users do not provide. For binomial mixed model, it is required.
+#' @param fit.model a description of the error distribution and link function to be used in the model. Either "PMM" for possion model, or "BMM" for binomial model (default = "PMM").
+#' @param fit.method method of fitting the generalized linear mixed model, currently only "REML" version is available.
+#' @param fit.maxiter a positive integer specifying the maximum number of iterations when fitting the generalized linear mixed model (default = 500).
+#' @param fit.tol a positive number specifying tolerance, the difference threshold for parameter estimates below which iterations should be stopped (default = 1e-5).
+#' @param numCore a positive integer specifying the number of cores for parallel computing (default = 1).
+#' @param filtering a logical switch for RNAseq data. By default, for each gene, at least two individuals should have read counts greater than 5. Otherwise, the gene is filtered (default = TRUE).
+#' @param verbose a logical switch for printing detailed information (parameter estimates in each iteration) for testing and debugging purpose (default = FALSE).
+#' @param ... additional arguments that could be passed to glm.
 #'
-#' @return A LIST
+#' @return
+#' \item{numIDV}{number of individuals with data being analyzed}
+#' \item{beta}{the fixed effect parameter estimate for the predictor of interest.}
+#' \item{se_beta}{the standard deviation of fixed effect.}
+#' \item{pvalue}{P value for the fixed effect, based on the wald test.}
+#' \item{h2}{heritability of the transformed rate.}
+#' \item{sigma2}{total variance component.}
+#' \item{overdisp}{dispersion parameter estimate.}
+#' \item{converged}{a logical indicator for convergence.}
+#'
+#' @references Sun, S., Hood, M., Scott, L., Peng, Q., Mukherjee, S., Tung, J., and Zhou, X. (2017). Differential expression analysis for rnaseq using poisson mixed models. Nucleicacids research, 45(11), e106–e106.
 #'
 
 pqlseq_modified <- function(RawCountDataSet, Phenotypes, Covariates=NULL, RelatednessMatrix=NULL, LibSize=NULL,

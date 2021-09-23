@@ -2,20 +2,22 @@
 % Please edit documentation in R/SpaceX.R
 \name{SpaceX}
 \alias{SpaceX}
-\title{SpaceX function}
+\title{Estimation of shared and cluster specfic gene co-expression networks for spatial transcriptomics data.}
 \usage{
 SpaceX(Gene_expression_mat, Spatial_locations)
 }
 \arguments{
-\item{Gene_expression_mat}{Gene expression matrix (N X G) [Should be provided as dataframe]}
+\item{Gene_expression_mat}{Gene expression dataframe (N X G).}
 
-\item{Spatial_locations}{Spatial locations and cluster annotations. [Should be provided as dataframe]
-(x,y) coordinates on the first two columns and
-cluster annotations on the third column.}
+\item{Spatial_locations}{Spatial locations and cluster annotations. This should be provided as dataframe. Here (x,y) coordinates on the first two columns and cluster annotations on the third column.}
 }
 \value{
-A LIST
+\item{SigmaPhi}{Shared Covariance matrix}
+\item{SigmaLambda}{Cluster specific Covaraince matrices}
 }
 \description{
-DESCRIPTION
+SpaceX function extimates shared and cluster specfic gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
+}
+\references{
+Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation in Spatial Transcriptomics.
 }

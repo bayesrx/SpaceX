@@ -2,7 +2,7 @@
 % Please edit documentation in R/pqlseq_modified.R
 \name{pqlseq_modified}
 \alias{pqlseq_modified}
-\title{TITLE}
+\title{Fit Generalized Linear Mixed Model with Known Kinship Matrices Through Penalized-quasi Likelihood}
 \usage{
 pqlseq_modified(
   RawCountDataSet,
@@ -21,35 +21,45 @@ pqlseq_modified(
 )
 }
 \arguments{
-\item{RawCountDataSet}{DESCRIPTION}
+\item{RawCountDataSet}{a data frame containing the read count.}
 
-\item{Phenotypes}{DESCRIPTION}
+\item{Phenotypes}{a vector containing the predictor of interest.}
 
-\item{Covariates}{DESCRIPTION}
+\item{Covariates}{a data frame containing the covariates subject to adjustment (Default = NULL).}
 
-\item{RelatednessMatrix}{DESCRIPTION}
+\item{RelatednessMatrix}{a known relationship matrix (e.g. kinship matrix in genetic studies). When supplied with a matrix, this matrix should be a positive semi-definite matrix with dimensions equal to the sample size in count data, and the order of subjects in this matrix should also match the order of subjects in count data. Currently there is no ID checking feature implemented, and it is the user's responsibility to match the orders.}
 
-\item{LibSize}{DESCRIPTION}
+\item{LibSize}{a data frame containing the total read count. For possion mixed model, it will be calculated automatically if users do not provide. For binomial mixed model, it is required.}
 
-\item{fit.model}{DESCRIPTION}
+\item{fit.model}{a description of the error distribution and link function to be used in the model. Either "PMM" for possion model, or "BMM" for binomial model (default = "PMM").}
 
-\item{fit.method}{DESCRIPTION}
+\item{fit.method}{method of fitting the generalized linear mixed model, currently only "REML" version is available.}
 
-\item{fit.maxiter}{DESCRIPTION}
+\item{fit.maxiter}{a positive integer specifying the maximum number of iterations when fitting the generalized linear mixed model (default = 500).}
 
-\item{fit.tol}{DESCRIPTION}
+\item{fit.tol}{a positive number specifying tolerance, the difference threshold for parameter estimates below which iterations should be stopped (default = 1e-5).}
 
-\item{numCore}{DESCRIPTION}
+\item{numCore}{a positive integer specifying the number of cores for parallel computing (default = 1).}
 
-\item{filtering}{DESCRIPTION}
+\item{filtering}{a logical switch for RNAseq data. By default, for each gene, at least two individuals should have read counts greater than 5. Otherwise, the gene is filtered (default = TRUE).}
 
-\item{verbose}{DESCRIPTION}
+\item{verbose}{a logical switch for printing detailed information (parameter estimates in each iteration) for testing and debugging purpose (default = FALSE).}
 
-\item{...}{DESCRIPTION}
+\item{...}{additional arguments that could be passed to glm.}
 }
 \value{
-A LIST
+\item{numIDV}{number of individuals with data being analyzed}
+\item{beta}{the fixed effect parameter estimate for the predictor of interest.}
+\item{se_beta}{the standard deviation of fixed effect.}
+\item{pvalue}{P value for the fixed effect, based on the wald test.}
+\item{h2}{heritability of the transformed rate.}
+\item{sigma2}{total variance component.}
+\item{overdisp}{dispersion parameter estimate.}
+\item{converged}{a logical indicator for convergence.}
 }
 \description{
-DESCRIPTION
+Fit a generalized linear mixed model with a random intercept. The covariance matrix of the random intercept is proportional to a known kinship matrix. This is a modified version of the pqlseq algorithm particularly for the SpaceX package. For more details check the pqlseq function from PQLseq package.
+}
+\references{
+Sun, S., Hood, M., Scott, L., Peng, Q., Mukherjee, S., Tung, J., and Zhou, X. (2017). Differential expression analysis for rnaseq using poisson mixed models. Nucleicacids research, 45(11), e106–e106.
 }

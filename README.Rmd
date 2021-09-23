@@ -22,33 +22,44 @@ The goal of SpaceX is to provide shared and cluster specfic gene co-expression n
 
 ## Installation
 
-You can install the released version of SpaceX from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of SpaceX from (https://github.com/SatwikAch/SpaceX) with:
 
 ``` r
 devtools::install_github("SatwikAch/SpaceX")
 ```
 
-## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
+```{r}
 library(SpaceX)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+```{r , eval=FALSE} 
+## Reading the Breast cancer data
 
-```{r cars}
-summary(cars)
+## Spatial locations
+head(BC_loc)
+
+## Gene expression for data
+head(BC_count) 
+
+## Data processing
+G <-dim(BC_count)[2] ## number of genes
+N <-dim(BC_count)[1] ## number of locations
+
+## Here we are randomly choosing 20 genes from 40 locations to run our SpaceX algorithm.
+set.seed(123)
+samp_G <- sample(1:G,20,replace = F)
+samp_N <- sample(1:N,40,replace = F)
+
+BC_loc <- BC_loc[samp_N,]
+BC_count <- BC_count[samp_N,samp_G]
+
+
+## Application to SpaceX algorithm
+BC_fit <- SpaceX(BC_count,BC_loc)
+
+## SigmaPhi :: Shared Covariance matrix
+## SigmaLambda :: Cluster specific Covaraince matrices
+
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
