@@ -44,15 +44,6 @@ head(BC_count)
 G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
-## Here we are randomly choosing 20 genes from 40 locations to run our SpaceX algorithm.
-set.seed(123)
-samp_G <- sample(1:G,20,replace = F)
-samp_N <- sample(1:N,40,replace = F)
-
-BC_loc <- BC_loc[samp_N,]
-BC_count <- BC_count[samp_N,samp_G]
-
-
 ## Application to SpaceX algorithm
 BC_fit <- SpaceX(BC_count,BC_loc)
 
