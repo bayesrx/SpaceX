@@ -1,0 +1,9 @@
+importFrom("stats", "binomial", "dist", "glm", "model.frame",
+               "na.omit", "na.pass", "pchisq", "poisson")
+importFrom("stats", "model.matrix", "var")
+export(SpaceX)
+export(pqlseq_modified)
+importFrom("doParallel", "registerDoParallel")
+importFrom("parallel", "detectCores")
+importFrom("foreach", "%dopar%", "foreach")
+importFrom("MSFA", "sp_msfa")
