@@ -50,3 +50,5 @@ BC_fit <- SpaceX(BC_count,BC_loc)
 ## SigmaPhi :: Shared Covariance matrix
 ## SigmaLambda :: Cluster specific Covaraince matrices
 ```
+
+You can view the supplementary file at this link: https://bookdown.org/satwik91/SpaceX_supplementary/.
