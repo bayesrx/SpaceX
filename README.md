@@ -45,10 +45,9 @@ G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
 ## Application to SpaceX algorithm
-BC_fit <- SpaceX(BC_count,BC_loc)
+BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3])
 
+##Output
 ## SigmaPhi :: Shared Covariance matrix
 ## SigmaLambda :: Cluster specific Covaraince matrices
 ```
-
-You can view the supplementary file at this link: https://bookdown.org/satwik91/SpaceX_supplementary/.

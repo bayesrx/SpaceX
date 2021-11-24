@@ -4,12 +4,14 @@
 \alias{SpaceX}
 \title{Estimation of shared and cluster specfic gene co-expression networks for spatial transcriptomics data.}
 \usage{
-SpaceX(Gene_expression_mat, Spatial_locations)
+SpaceX(Gene_expression_mat, Spatial_locations, Cluster_annotations)
 }
 \arguments{
 \item{Gene_expression_mat}{Gene expression dataframe (N X G).}
 
-\item{Spatial_locations}{Spatial locations and cluster annotations. This should be provided as dataframe. Here (x,y) coordinates on the first two columns and cluster annotations on the third column.}
+\item{Spatial_locations}{Spatial locations with coordinates. This should be provided as dataframe.}
+
+\item{Cluster_annotations}{Cluster annotations for each of the spatial location.}
 }
 \value{
 \item{SigmaPhi}{Shared Covariance matrix}
