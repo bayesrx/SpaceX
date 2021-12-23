@@ -21,5 +21,5 @@ SpaceX(Gene_expression_mat, Spatial_locations, Cluster_annotations)
 SpaceX function extimates shared and cluster specfic gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
 }
 \references{
-Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation in Spatial Transcriptomics.
+Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
 }

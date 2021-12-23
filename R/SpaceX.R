@@ -10,7 +10,7 @@
 #' \item{SigmaPhi}{Shared Covariance matrix}
 #' \item{SigmaLambda}{Cluster specific Covaraince matrices}
 #'
-#' @references Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation in Spatial Transcriptomics.
+#' @references Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
 #'
 
 SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations){
