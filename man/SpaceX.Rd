@@ -2,9 +2,14 @@
 % Please edit documentation in R/SpaceX.R
 \name{SpaceX}
 \alias{SpaceX}
-\title{Estimation of shared and cluster specfic gene co-expression networks for spatial transcriptomics data.}
+\title{Estimation of shared and cluster specific gene co-expression networks for spatial transcriptomics data.}
 \usage{
-SpaceX(Gene_expression_mat, Spatial_locations, Cluster_annotations)
+SpaceX(
+  Gene_expression_mat,
+  Spatial_locations,
+  Cluster_annotations,
+  Post_process = FALSE
+)
 }
 \arguments{
 \item{Gene_expression_mat}{Gene expression dataframe (N X G).}
@@ -12,13 +17,22 @@ SpaceX(Gene_expression_mat, Spatial_locations, Cluster_annotations)
 \item{Spatial_locations}{Spatial locations with coordinates. This should be provided as dataframe.}
 
 \item{Cluster_annotations}{Cluster annotations for each of the spatial location.}
+
+\item{Post_process}{If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
+Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.}
 }
 \value{
-\item{SigmaPhi}{Shared Covariance matrix}
-\item{SigmaLambda}{Cluster specific Covaraince matrices}
+\item{Posterior_samples}{Posterior samples}
+\item{Shared_network}{Shared co-expression matrix}
+\item{Cluster_network}{Cluster specific co-expression matrices}
 }
 \description{
-SpaceX function extimates shared and cluster specfic gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
+SpaceX function estimates shared and cluster specific gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
+}
+\examples{
+Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
+
+
 }
 \references{
 Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.

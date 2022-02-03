@@ -1,19 +1,24 @@
-#' @title Estimation of shared and cluster specfic gene co-expression networks for spatial transcriptomics data.
+#' @title Estimation of shared and cluster specific gene co-expression networks for spatial transcriptomics data.
 #'
-#' @description SpaceX function extimates shared and cluster specfic gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
+#' @description SpaceX function estimates shared and cluster specific gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
 #'
 #' @param Gene_expression_mat Gene expression dataframe (N X G).
 #' @param Spatial_locations Spatial locations with coordinates. This should be provided as dataframe.
 #' @param Cluster_annotations Cluster annotations for each of the spatial location.
+#' @param Post_process If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
+#' Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #'
 #' @return
-#' \item{SigmaPhi}{Shared Covariance matrix}
-#' \item{SigmaLambda}{Cluster specific Covaraince matrices}
+#' \item{Posterior_samples}{Posterior samples}
+#' \item{Shared_network}{Shared co-expression matrix}
+#' \item{Cluster_network}{Cluster specific co-expression matrices}
 #'
 #' @references Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
 #'
-
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations){
+#' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
+#'
+#'
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,Post_process=FALSE){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
@@ -59,6 +64,7 @@ for (l in 1:L) {
       cov_kernel_l[j,i] <- cov_kernel_l[i,j]
     }}
 
+  print("Spatial Poisson Mixed Model")
   fit <- pqlseq_modified(RawCountDataSet=t(Y_mat),Phenotypes= rep(1,N_l[l]), RelatednessMatrix = cov_kernel_l,
                    fit.model="PMM", numCore = 1)
 
@@ -93,10 +99,30 @@ for (l in 1:L) {
 print("Multi-Study Factor Model")
 fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE)
 
-return(fit_MSFA)
+if(Post_process==FALSE){
+return(Posterior_samples=fit_MSFA)
+}
+else{
+## Post processing of the posterior samples
+nrun <- 10000
+SigmaPhi_post <- CorrPhi_post <- array(0, dim=c(G, G, nrun))
+Sigma_l_post <- Corr_l_post <- array(0, dim=c(G, G, nrun,L))
 
-## SigmaPhi :: Shared Covariance matrix
-## SigmaLambda :: Cluster specific Covaraince matrices
+  for(j in 1:nrun){
+    SigmaPhi_post[,,j] <- tcrossprod(fit_MSFA$Phi[,,j])
+    CorrPhi_post[,,j] <- cov2cor(SigmaPhi_post[,,j])
+    for (l in 1:L) {
+      Sigma_l_post[,,j,l] <- tcrossprod(fit_MSFA$Phi[,,j]) + tcrossprod(fit_MSFA$Lambda[[l]][,,j])
+      Corr_l_post[,,j,l] <- cov2cor(Sigma_l_post[,,j,l])
+    }
+  }
+
+Corr_l_est <- apply(Corr_l_post, c(1,2,4), mean)
+CorrPhi_est <- apply(CorrPhi_post, c(1,2), mean)
+
+return(list(Posterior_samples=fit_MSFA,Shared_network=CorrPhi_est,Cluster_network=Corr_l_est))
+}
+
 }
 
 

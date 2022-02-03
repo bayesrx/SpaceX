@@ -11,6 +11,13 @@ co-expression networks for spatial transcriptomics data.
 
 ## Installation
 
+The package requires a dependency that is not available on CRAN. Install
+it with:
+
+``` r
+devtools::install_github("rdevito/MSFA")
+```
+
 You can install the released version of SpaceX from
 (<https://github.com/SatwikAch/SpaceX>) with:
 
@@ -21,14 +28,6 @@ devtools::install_github("SatwikAch/SpaceX")
 ``` r
 library(SpaceX)
 #> Loading required package: PQLseq
-#> Registered S3 methods overwritten by 'robust':
-#>   method              from      
-#>   plot.covfm          fit.models
-#>   print.covfm         fit.models
-#>   summary.covfm       fit.models
-#>   print.summary.covfm fit.models
-#> rlm is already registered in the fit.models registry
-#> covfm is already registered in the fit.models registry
 ```
 
 ``` r
@@ -44,12 +43,12 @@ head(BC_count)
 G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
-## Application to SpaceX algorithm
-BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3])
+## Application to SpaceX algorithm (Please make sure to request for large enough memory to work with the posterior samples)
+BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],Post_process = TRUE)
 
-##Output
-## SigmaPhi :: Shared Covariance matrix
-## SigmaLambda :: Cluster specific Covaraince matrices
+## Shared_network :: Shared co-expression matrix
+## Cluster_network :: Cluster specific co-expression matrices
 ```
 
-You can view the supplementary file at this link: https://bookdown.org/satwik91/SpaceX_supplementary/.
+You can view the supplementary file at this link:
+<https://bookdown.org/satwik91/SpaceX_supplementary/>.
