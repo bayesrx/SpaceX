@@ -8,6 +8,7 @@ SpaceX(
   Gene_expression_mat,
   Spatial_locations,
   Cluster_annotations,
+  sPMM = FALSE,
   Post_process = FALSE
 )
 }
@@ -17,6 +18,8 @@ SpaceX(
 \item{Spatial_locations}{Spatial locations with coordinates. This should be provided as dataframe.}
 
 \item{Cluster_annotations}{Cluster annotations for each of the spatial location.}
+
+\item{sPMM}{If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.}
 
 \item{Post_process}{If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
 Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.}

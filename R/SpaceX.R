@@ -5,6 +5,7 @@
 #' @param Gene_expression_mat Gene expression dataframe (N X G).
 #' @param Spatial_locations Spatial locations with coordinates. This should be provided as dataframe.
 #' @param Cluster_annotations Cluster annotations for each of the spatial location.
+#' @param sPMM If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.
 #' @param Post_process If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
 #' Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #'
@@ -18,7 +19,7 @@
 #' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
 #'
 #'
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,Post_process=FALSE){
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
@@ -76,8 +77,8 @@ for (l in 1:L) {
   ## Estimation of latent gene expression
   for (g in 1:G) {
 
-    if(sigma1_sq_est[g,l]==0){
-      V <- (sigma1_sq_est[g,l]+0.001)*cov_kernel_l + (sigma2_sq_est[g,l])*diag(N_l[l])
+    if(sigma1_sq_est[g,l]< 0.01 || sigma2_sq_est[g,l]< 0.01){
+      V <- (sigma1_sq_est[g,l]+0.001)*cov_kernel_l + (sigma2_sq_est[g,l]+0.001)*diag(N_l[l])
     }
     else{
       V <- (sigma1_sq_est[g,l])*cov_kernel_l + (sigma2_sq_est[g,l])*diag(N_l[l])
@@ -90,7 +91,6 @@ for (l in 1:L) {
       Z_est[[l]][,g] <- ((sigma2_sq_est[g,l])*solve(V))%*%u[[l]][g,]
     }
 
-
   }
   print(l)
 }
@@ -100,7 +100,7 @@ print("Multi-Study Factor Model")
 fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE)
 
 if(Post_process==FALSE){
-return(Posterior_samples=fit_MSFA)
+AA <- list(Posterior_samples=fit_MSFA)
 }
 else{
 ## Post processing of the posterior samples
@@ -120,16 +120,15 @@ Sigma_l_post <- Corr_l_post <- array(0, dim=c(G, G, nrun,L))
 Corr_l_est <- apply(Corr_l_post, c(1,2,4), mean)
 CorrPhi_est <- apply(CorrPhi_post, c(1,2), mean)
 
-return(list(Posterior_samples=fit_MSFA,Shared_network=CorrPhi_est,Cluster_network=Corr_l_est))
+AA <- list(Posterior_samples=fit_MSFA,Shared_network=CorrPhi_est,Cluster_network=Corr_l_est)
+}
+
+if(sPMM==FALSE){
+  return(AA)
+}
+else{
+  return(c(AA,sigma1_sq_est=sigma1_sq_est,sigma2_sq_est=sigma2_sq_est))
 }
 
 }
-
-
-
-
-
-
-
-
 
