@@ -6,8 +6,8 @@
 #' @param Spatial_locations Spatial locations with coordinates. This should be provided as dataframe.
 #' @param Cluster_annotations Cluster annotations for each of the spatial location.
 #' @param sPMM If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.
-#' @param Post_process If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
-#' Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
+#' @param Post_process If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
+#' Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.
 #'
 #' @return
 #' \item{Posterior_samples}{Posterior samples}
