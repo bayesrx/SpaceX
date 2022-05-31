@@ -11,6 +11,18 @@ co-expression networks for spatial transcriptomics data.
 
 ## Installation
 
+This package requires a Fortran compiler in order to work. Here are the
+instructions:
+
+-   Windows: install the Rtools package that is appropriate for your
+    version of R
+
+-   Mac: Go to this website and follow the instructions:
+    (<https://mac.R-project.org/tools/>)
+
+-   Linux: From a terminal, do the following: `sudo apt install gcc`.
+    That will bring in multiple compilers.
+
 The package requires a dependency that is not available on CRAN. Install
 it with:
 
@@ -43,7 +55,7 @@ head(BC_count)
 G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
-## Application to SpaceX algorithm (Please make sure to request for large enough memory to work with the posterior samples)
+## Application to SpaceX algorithm
 BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],sPMM=FALSE,Post_process = TRUE)
 
 ## Shared_network :: Shared co-expression matrix
