@@ -6,8 +6,8 @@
 #' @param Spatial_locations Spatial locations with coordinates. This should be provided as dataframe.
 #' @param Cluster_annotations Cluster annotations for each of the spatial location.
 #' @param sPMM If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.
-#' @param Post_process If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
-#' Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.
+#' @param Post_process If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
+#' Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #'
 #' @return
 #' \item{Posterior_samples}{Posterior samples}
@@ -16,9 +16,10 @@
 #'
 #' @references Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
 #'
+#' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
 #'
 #'
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=TRUE){
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
@@ -104,18 +105,22 @@ AA <- list(Posterior_samples=fit_MSFA)
 else{
 ## Post processing of the posterior samples
 nrun <- 10000
-F <- dim(fit_MSFA$Phi)[2]
+SigmaPhi_post <- CorrPhi_post <- array(0, dim=c(G, G, nrun))
+Sigma_l_post <- Corr_l_post <- array(0, dim=c(G, G, nrun,L))
 
-SpaceProc <- .Fortran("bigtdsub",n=as.integer(G),
-   m=as.integer(F),o=as.integer(nrun),
-   x=as.single(fit_MSFA$Phi),
-   z=as.single(unlist(fit_MSFA$Lambda)),
-   b=as.single(rep(0,G*G)),s=as.single(rep(0,G*G*L)))
+  for(j in 1:nrun){
+    SigmaPhi_post[,,j] <- tcrossprod(fit_MSFA$Phi[,,j])
+    CorrPhi_post[,,j] <- cov2cor(SigmaPhi_post[,,j])
+    for (l in 1:L) {
+      Sigma_l_post[,,j,l] <- tcrossprod(fit_MSFA$Phi[,,j]) + tcrossprod(fit_MSFA$Lambda[[l]][,,j])
+      Corr_l_post[,,j,l] <- cov2cor(Sigma_l_post[,,j,l])
+    }
+  }
 
-Sh1 <- matrix(SpaceProc$b,nrow=G,ncol=G)
-Clus1 <- array(SpaceProc$s,c(G,G,L))
+Corr_l_est <- apply(Corr_l_post, c(1,2,4), mean)
+CorrPhi_est <- apply(CorrPhi_post, c(1,2), mean)
 
-AA <- list(Posterior_samples=fit_MSFA,Shared_network=Sh1,Cluster_network=Clus1)
+AA <- list(Posterior_samples=fit_MSFA,Shared_network=CorrPhi_est,Cluster_network=Corr_l_est)
 }
 
 if(sPMM==FALSE){
