@@ -32,11 +32,6 @@ Default is \code{FALSE} and the code will return the posterior samples of \code{
 \description{
 SpaceX function estimates shared and cluster specific gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
 }
-\examples{
-Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
-
-
-}
 \references{
 Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
 }

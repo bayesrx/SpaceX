@@ -1,0 +1,8 @@
+FC= gfortran
+F77= gfortran
+CC = gcc
+
+SpaceX.o: SpaceX.f95
+	$(FC) -c SpaceX.f95 -o SpaceX.o  -fPIC
+	$(FC) -o SpaceX.so SpaceX.o  -shared  -fopenmp
+

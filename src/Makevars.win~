@@ -1,0 +1,8 @@
+FC= gfortran
+F77= gfortran
+CC = gcc
+
+newSpace2.o: newSpace2.f95
+	$(FC) -c newSpace2.f95 -o newSpace2.o  -fPIC
+	$(FC) -o newSpace2.dll newSpace2.o  -shared  -fopenmp
+
