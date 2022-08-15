@@ -56,7 +56,7 @@ G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
 ## Application to SpaceX algorithm
-BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],sPMM=FALSE,Post_process = TRUE)
+BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],sPMM=FALSE,Post_process = TRUE,numCore = 2)
 
 ## Shared_network :: Shared co-expression matrix
 ## Cluster_network :: Cluster specific co-expression matrices

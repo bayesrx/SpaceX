@@ -9,7 +9,8 @@ SpaceX(
   Spatial_locations,
   Cluster_annotations,
   sPMM = FALSE,
-  Post_process = FALSE
+  Post_process = FALSE,
+  numCore = 1
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ SpaceX(
 
 \item{Post_process}{If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.}
+
+\item{numCore}{The number of cores for parallel computing (default = 1).}
 }
 \value{
 \item{Posterior_samples}{Posterior samples}

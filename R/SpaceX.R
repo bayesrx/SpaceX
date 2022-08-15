@@ -8,6 +8,7 @@
 #' @param sPMM If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.
 #' @param Post_process If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #' Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.
+#' @param numCore The number of cores for parallel computing (default = 1).
 #'
 #' @return
 #' \item{Posterior_samples}{Posterior samples}
@@ -19,7 +20,7 @@
 #' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
 #'
 #'
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE){
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE,numCore = 1){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
@@ -67,7 +68,7 @@ for (l in 1:L) {
 
   print("Spatial Poisson Mixed Model")
   fit <- pqlseq_modified(RawCountDataSet=t(Y_mat),Phenotypes= rep(1,N_l[l]), RelatednessMatrix = cov_kernel_l,
-                   fit.model="PMM", numCore = 1)
+                   fit.model="PMM", numCore = numCore)
 
   j = 1 + (0:(G-1))*N_l[l]
   sigma1_sq_est[,l] <- fit$tau1[j]
