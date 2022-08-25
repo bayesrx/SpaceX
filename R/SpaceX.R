@@ -106,23 +106,20 @@ AA <- list(Posterior_samples=fit_MSFA)
 else{
 ## Post processing of the posterior samples
 nrun <- 10000
-SigmaPhi_post <- CorrPhi_post <- array(0, dim=c(G, G, nrun))
-Sigma_l_post <- Corr_l_post <- array(0, dim=c(G, G, nrun,L))
+F <- dim(fit_MSFA$Phi)[2]
 
-  for(j in 1:nrun){
-    SigmaPhi_post[,,j] <- tcrossprod(fit_MSFA$Phi[,,j])
-    CorrPhi_post[,,j] <- cov2cor(SigmaPhi_post[,,j])
-    for (l in 1:L) {
-      Sigma_l_post[,,j,l] <- tcrossprod(fit_MSFA$Phi[,,j]) + tcrossprod(fit_MSFA$Lambda[[l]][,,j])
-      Corr_l_post[,,j,l] <- cov2cor(Sigma_l_post[,,j,l])
-    }
-  }
+SpaceProc <- .Fortran("bigtdsub",n=as.integer(G),
+   m=as.integer(F),o=as.integer(nrun),
+   x=as.single(fit_MSFA$Phi),
+   z=as.single(unlist(fit_MSFA$Lambda)),
+   b=as.single(rep(0,G*G)),s=as.single(rep(0,G*G*L)))
 
-Corr_l_est <- apply(Corr_l_post, c(1,2,4), mean)
-CorrPhi_est <- apply(CorrPhi_post, c(1,2), mean)
+Sh1 <- matrix(SpaceProc$b,nrow=G,ncol=G)
+Clus1 <- array(SpaceProc$s,c(G,G,L))
 
-AA <- list(Posterior_samples=fit_MSFA,Shared_network=CorrPhi_est,Cluster_network=Corr_l_est)
+AA <- list(Posterior_samples=fit_MSFA,Shared_network=Sh1,Cluster_network=Clus1)
 }
+
 
 if(sPMM==FALSE){
   return(AA)
@@ -132,4 +129,3 @@ else{
 }
 
 }
-

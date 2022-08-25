@@ -9,8 +9,7 @@ SpaceX(
   Spatial_locations,
   Cluster_annotations,
   sPMM = FALSE,
-  Post_process = FALSE,
-  numCore = 1
+  Post_process = FALSE
 )
 }
 \arguments{
@@ -22,10 +21,8 @@ SpaceX(
 
 \item{sPMM}{If \code{TRUE}, the code will return the estimates of sigma1_sq and sigma2_sq from the spatial Poisson mixed model.}
 
-\item{Post_process}{If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
-Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.}
-
-\item{numCore}{The number of cores for parallel computing (default = 1).}
+\item{Post_process}{If \code{TRUE}, the code will return all the posterior samples, shared and cluster specific co-expressions. Please make sure to request for large enough memory to work with the posterior samples.
+Default is \code{FALSE} and the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.}
 }
 \value{
 \item{Posterior_samples}{Posterior samples}
@@ -34,11 +31,6 @@ Default is \code{TRUE} and the code will return all the posterior samples, share
 }
 \description{
 SpaceX function estimates shared and cluster specific gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
-}
-\examples{
-Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
-
-
 }
 \references{
 Acharyya S., Zhou X., Baladandayuthapani V. (2021). SpaceX: Gene Co-expression Network Estimation for Spatial Transcriptomics.
