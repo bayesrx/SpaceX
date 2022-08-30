@@ -9,6 +9,8 @@
 #' @param Post_process If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #' Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.
 #' @param numCore The number of cores for parallel computing (default = 1).
+#' @param nrun The total number of MCMC iterations for MSFA. Default is 10000.
+#' @param burn The number of burnin samples. Default is 5000.
 #'
 #' @return
 #' \item{Posterior_samples}{Posterior samples}
@@ -20,7 +22,7 @@
 #' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
 #'
 #'
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE,numCore = 1){
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE,numCore = 1,nrun=10000,burn=5000){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
@@ -98,14 +100,15 @@ for (l in 1:L) {
 
 ## Applying multi-study factor model on latent gene expression matrix
 print("Multi-Study Factor Model")
-fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE)
+fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE,
+                   control = sp_msfa_control(nrun = nrun,burn = burn))
 
 if(Post_process==FALSE){
 AA <- list(Posterior_samples=fit_MSFA)
 }
 else{
 ## Post processing of the posterior samples
-nrun <- 10000
+nrun <- nrun - burn
 F <- dim(fit_MSFA$Phi)[2]
 
 SpaceProc <- .Fortran("bigtdsub",n=as.integer(G),
