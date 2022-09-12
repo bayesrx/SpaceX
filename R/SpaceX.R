@@ -1,4 +1,5 @@
 #' @title Estimation of shared and cluster specific gene co-expression networks for spatial transcriptomics data.
+#' @title Estimation of shared and cluster specific gene co-expression networks for spatial transcriptomics data.
 #'
 #' @description SpaceX function estimates shared and cluster specific gene co-expression networks for spatial transcriptomics data. Please make sure to provide both inputs as dataframe. More details about the SpaceX algorithm can be found in the reference paper.
 #'
@@ -9,8 +10,8 @@
 #' @param Post_process If \code{FALSE}, the code will return the posterior samples of \code{Phi} and \code{Psi^c} (based on definition in equation 1 of the SpaceX paper) only.
 #' Default is \code{TRUE} and the code will return all the posterior samples, shared and cluster specific co-expressions.
 #' @param numCore The number of cores for parallel computing (default = 1).
-#' @param nrun The total number of MCMC iterations for MSFA. Default is 10000.
-#' @param burn The number of burnin samples. Default is 5000.
+#' @param nrun default = 10000
+#' @param burn default = 5000
 #'
 #' @return
 #' \item{Posterior_samples}{Posterior samples}
@@ -22,11 +23,13 @@
 #' @examples Implementation details and examples can be found at this link https://bookdown.org/satwik91/SpaceX_supplementary/.
 #'
 #'
-SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,sPMM=FALSE,Post_process=FALSE,numCore = 1,nrun=10000,burn=5000){
+SpaceX <- function(Gene_expression_mat, Spatial_locations, Cluster_annotations,
+                   sPMM=FALSE,Post_process=FALSE,numCore = 1,
+       	  nrun=10000,burn=5000){
 
 Spatial_loc = as.data.frame(cbind(Spatial_locations,Cluster_annotations))
 
-#### Global Parameters ######h
+#### Global Parameters ######
 G <-dim(Gene_expression_mat)[2]
 L <- length(unique(Spatial_loc[,3]))
 Clusters <- unique(Spatial_loc[,3])
@@ -100,8 +103,7 @@ for (l in 1:L) {
 
 ## Applying multi-study factor model on latent gene expression matrix
 print("Multi-Study Factor Model")
-fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE,
-                   control = sp_msfa_control(nrun = nrun,burn = burn))
+fit_MSFA = sp_msfa(Z_est,  k = 10,  j_s = rep(10,L), trace = FALSE)
 
 if(Post_process==FALSE){
 AA <- list(Posterior_samples=fit_MSFA)
@@ -115,7 +117,7 @@ SpaceProc <- .Fortran("bigtdsub",n=as.integer(G),
    m=as.integer(F),o=as.integer(nrun),
    x=as.single(fit_MSFA$Phi),
    z=as.single(unlist(fit_MSFA$Lambda)),
-   b=as.single(rep(0,G*G)),s=as.single(rep(0,G*G*L)))
+   b=as.single(rep(0,G*G)),s=as.single(rep(0,G*G*L)),L=as.integer(L))
 
 Sh1 <- matrix(SpaceProc$b,nrow=G,ncol=G)
 Clus1 <- array(SpaceProc$s,c(G,G,L))

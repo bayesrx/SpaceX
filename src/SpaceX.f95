@@ -1,4 +1,4 @@
-subroutine bigtdsub(n,m,o,x,z,b,s)
+subroutine bigtdsub(n,m,o,x,z,b,s,L)
 
 
   use omp_lib
@@ -12,12 +12,13 @@ subroutine bigtdsub(n,m,o,x,z,b,s)
   integer :: p
   integer :: o
   integer :: ii
+  integer :: L
   
   real(kind = 4)   :: x(n*m*o)
-  real(kind = 4)  :: z(n*m*o*3) 
+  real(kind = 4)  :: z(n*m*o*L) 
   real  :: b(n*n)
-  real  :: s(n*n*3)
-  real , allocatable :: a(:,:,:)
+  real  :: s(n*n*L)
+  real , allocatable :: a(:,:,:)  
   real , allocatable :: y(:,:,:)
   real , allocatable :: f(:,:,:,:)
   real , allocatable :: u(:,:,:,:)
@@ -40,7 +41,7 @@ subroutine bigtdsub(n,m,o,x,z,b,s)
 
 
   thread_num = omp_get_max_threads ( )
-  p=3
+  p=L
 
 
   allocate(y(1:n,1:m,1:o))
@@ -94,7 +95,7 @@ enddo
 
 
 call mean1sub(n,n,o,v,w)
-        call mean2sub(n,n,o,3,u,q)
+        call mean2sub(n,n,o,L,u,q)
     
 
 !$omp end parallel 

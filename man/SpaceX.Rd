@@ -29,9 +29,9 @@ Default is \code{TRUE} and the code will return all the posterior samples, share
 
 \item{numCore}{The number of cores for parallel computing (default = 1).}
 
-\item{nrun}{The total number of MCMC iterations for MSFA. Default is 10000.}
+\item{nrun}{default = 10000}
 
-\item{burn}{The number of burnin samples. Default is 5000.}
+\item{burn}{default = 5000}
 }
 \value{
 \item{Posterior_samples}{Posterior samples}
