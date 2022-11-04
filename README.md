@@ -64,3 +64,6 @@ BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],sPMM=FALSE,Post_process = TRUE
 
 You can view the supplementary file at this link:
 <https://bookdown.org/satwik91/SpaceX_supplementary/>.
+
+Tutorial website can be found here: https://satwikach.github.io/SpaceX.github.io/
+
