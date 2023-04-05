@@ -1,13 +1,32 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# SpaceX
+# SpaceX overview
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SpaceX is to provide shared and cluster specfic gene
-co-expression networks for spatial transcriptomics data.
+![SpaceXpipeline](SpaceX_Overview.jpg) The SpaceX (<u>spa</u>tially
+dependent gene <u>c</u>o-<u>ex</u>pression network) is a Bayesian
+methodology to identify both shared and cluster-specific co-expression
+network across genes. These clusters can be cell type specific or based
+on spatial regions. SpaceX uses an over-dispersed spatial Poisson model
+coupled with a high-dimensional factor model which is based on a
+dimension reduction technique for computational efficiency.
+
+The Figure above shows the overall conceptual flow of our pipeline.
+**Panel A** is an image of a tissue section from the region of interest.
+**Panel B** shows spatial gene expression and biomarkers which are
+recorded from that tissue section with the help of sequencing
+techniques. **Panel C** is the resulting data matrix of gene expression
+along with spatial locations and cluster annotations on the tissue. All
+these serve as input for the SpaceX model to obtain the shared (**Panel
+D**) and cluster-specific co-expression networks (**Panel E**). Finally,
+we use these networks for downstream analysis to detect gene modules and
+hub genes across spatial regions (**Panel F** & **Panel G**
+respectively) for biological interpretation.
+
+<!-- The goal of SpaceX is to provide shared and cluster specfic gene co-expression networks for spatial transcriptomics data. -->
 
 ## Installation
 
@@ -42,6 +61,50 @@ library(SpaceX)
 #> Loading required package: PQLseq
 ```
 
+## SpaceX function
+
+### Inputs
+
+The first input is **Gene\_expression\_mat** which is $N \times G$
+dataframe. Here $N$ denotes the number of spatial locations and $G$
+denotes number of genes.
+
+The second input is **Spatial\_locations** is a dataframe which contains
+spatial coordinates.
+
+The third input is **Cluster\_annotations**.
+
+The fourth input is **sPMM**. If TRUE, the code will return the
+estimates of sigma1\_sq and sigma2\_sq from the spatial Poisson mixed
+model.
+
+The fifth input is **Post\_process**. If FALSE, the code will return the
+posterior samples of $\Phi$ and $\Psi^c$ (based on definition in
+equation 1 of the SpaceX paper) only. Default is TRUE and the code will
+return all the posterior samples, shared and cluster specific
+co-expressions.
+
+The final input is **numCore**. The number of requested cores for
+parallel computing and default is set to be 1.
+
+### Output
+
+You will obtain a list of objects as output.
+
+**Posterior\_samples** contains all the posterior samples.
+
+**Shared\_network** provides the shared co-expression matrix
+(transformed correlation matrix of $G_{s} = \Phi \Phi^{T}$).
+
+**Cluster\_network** provides the cluster specific co-expression
+matrices (transformed correlation matrices of
+$G_{c} = \Phi \Phi^{T} + \Psi^{c} {\Psi^{c^{T}}}$).
+
+## Example
+
+An example code with the breast cancer data to demonstrate how to run
+the SpaceX function and obtain shared and cluster specific networks.
+
 ``` r
 ## Reading the Breast cancer data
 
@@ -55,15 +118,31 @@ head(BC_count)
 G <-dim(BC_count)[2] ## number of genes
 N <-dim(BC_count)[1] ## number of locations
 
-## Application to SpaceX algorithm
+## Application to SpaceX algorithm (Please make sure to request for large enough memory to work with the posterior samples)
 BC_fit <- SpaceX(BC_count,BC_loc[,1:2],BC_loc[,3],sPMM=FALSE,Post_process = TRUE,numCore = 2)
 
 ## Shared_network :: Shared co-expression matrix
 ## Cluster_network :: Cluster specific co-expression matrices
 ```
 
-You can view the supplementary file at this link:
-<https://bookdown.org/satwik91/SpaceX_supplementary/>.
+## Tutorial website
 
-Tutorial website can be found here: https://satwikach.github.io/SpaceX.github.io/
+The tutorial website can be found
+[here](https://satwikach.github.io/SpaceX.github.io/).
 
+## Paper
+
+Satwik Acharyya, Xiang Zhou and Veerabhadran Baladandayuthapani (2022).
+[SpaceX: Gene Co-expression Network Estimation for Spatial
+Transcriptomics](https://doi.org/10.1093/bioinformatics/btac645).
+Bioinformatics, 38(22): 5033–5041.
+
+## Supplementary file
+
+[Supplementary](https://bookdown.org/satwik91/SpaceX_supplementary/)
+
+## Points to note
+
+-   Please run the SpaceX package in R 4.1.2.
+
+-   Please email at <satwika@umich.edu> for any issues.
